@@ -1,0 +1,131 @@
+Read /docs/PROJECT_SPEC.md's "Product Vocabulary" section and/docs/DESIGN_SYSTEM.md before starting. Also open the current dashboard
+page component and the friends-fetch logic before changing anything — one
+of the issues below is a bug, not a visual gap.
+
+
+This is a combined copy + visual pass on the main dashboard ("Your Space").
+Do the fixes in this order: bug fix → copy/vocabulary → layout → visual
+polish. Don't reorder — layout and polish decisions below assume the new
+copy is already in place.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+2. VOCABULARY + COPY CHANGES
+
+
+Update PROJECT_SPEC.md's vocabulary table first, then apply everywhere
+these terms currently appear (dashboard, friend search page, empty states,
+nav labels, group detail page headers) — this is a vocabulary decision,
+not a one-page patch:
+
+
+- "Visible Stars" → "Your People"
+- "Constellations" → "Your Groups" (label/copy change only — group
+  creation, membership, and all underlying data/API stay exactly the same)
+- Keep "Stars" as the individual-person visual metaphor inside the
+  constellation visualization itself (glowing dots, connecting lines) —
+  this change is about section/card labels, not the illustration language
+- Keep "Windows" and "Alignment" as-is elsewhere in the app — unaffected
+
+
+Tagline: "Your people. Your time. Aligned." Place it:
+- On the landing page, directly under the Stellr wordmark
+- As the dashboard header subline, replacing the current generic "Track
+  your schedule and connected stars" copy
+- Anywhere else a one-line product description currently appears
+
+
+Add one short supporting line under each dashboard card title so a
+first-time user understands the section without a help doc:
+- Under "Your People": "People you can see are free right now"
+- Under "Your Groups": "Compare schedules and find shared time"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+3. LAYOUT — STOP TREATING THIS AS A TWO-CARD STACK
+
+
+Right now the page is a single narrow column with a lot of unused
+horizontal and vertical space on desktop. Restructure as a proper
+dashboard grid:
+
+
+- Header row: Stellr wordmark/logo (if not already persistent in a nav) +
+  page greeting + the new tagline subline
+- A quick-glance strip below the header: 3-4 small stat/status chips in a
+  row — current status (free / in class), count of Your People, count of
+  Your Groups, today's next window. This gives the page useful content
+  even before the user has added a single person, and fills the
+  horizontal space that's currently empty.
+- "Your People" and "Your Groups" cards side-by-side on desktop (not
+  stacked) at roughly half-width each, using the full grid
+- Stack normally on mobile
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+4. MAKE THE EMPTY STATES DO MORE WORK
+
+
+"No constellations yet" (now "No groups yet") currently reads as wasted
+card space — centered text, one button, lots of surrounding emptiness.
+Fix:
+
+
+- Use the constellation illustration/icon system from DESIGN_SYSTEM.md (or
+  star-based iconography) instead of a plain generic people icon — this is
+  the single most brand-defining visual moment on an empty dashboard,
+  don't spend it on a generic icon
+- Add a few faint static "stars" inside the card itself (matching the
+  ambient background dots already used elsewhere on the page), so the
+  card doesn't read as a hole in the layout
+- Keep the primary CTA button, but add a lighter secondary action too
+  (e.g. "or add someone to Your People first" as a text link) — creating a
+  group before adding any people is an odd first action to lead with
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+5. VISUAL RICHNESS PASS
+
+
+- Subtle glow/border treatment on card headers using the Available/
+  Primary tokens — right now every card has an identical flat border with
+  no depth
+- Hover/focus state on the Create button and interactive empty-state
+  elements — right now nothing signals interactivity. Soft glow using the
+  Primary token on hover, per the button variants already in
+  DESIGN_SYSTEM.md
+- Gentle stagger-fade-in of the cards on page load using Framer Motion —
+  calm per the brand emotion section, not flashy
+- Check the ambient background stars (the faint dots visible in the
+  current layout) stay consistent in density/opacity across the full
+  viewport height — right now they thin out oddly in empty page regions
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+DO NOT
+- Do not change the underlying data model, group/friend logic, or API
+  contracts — this pass is copy, layout, and visual polish only
+- Do not add new features (e.g. don't build friend search into this page
+  if it doesn't already trigger from here)
+
+
+When done, describe or screenshot the resulting layout so I can confirm
+both the empty-space problem and the vocabulary update are actually
+resolved before moving to the next phase.
