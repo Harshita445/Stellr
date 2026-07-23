@@ -3,6 +3,7 @@ from uuid import UUID
 from sqlalchemy import delete, select
 from sqlalchemy.orm import selectinload
 
+from app.models.timeslot import Timeslot
 from app.models.timetable_entry import TimetableEntry
 from app.repositories.base import BaseRepository
 
@@ -26,9 +27,10 @@ class TimetableEntryRepository(BaseRepository[TimetableEntry]):
     async def get_by_sections(self, section_ids: list[UUID], day_of_week: int) -> dict[UUID, list[TimetableEntry]]:
         stmt = (
             select(TimetableEntry)
+            .options(selectinload(TimetableEntry.timeslot))
             .where(TimetableEntry.section_id.in_(section_ids))
             .join(TimetableEntry.timeslot)
-            .where(TimetableEntry.timeslot.has(day_of_week=day_of_week))
+            .where(Timeslot.day_of_week == day_of_week)
         )
         result = await self.session.execute(stmt)
         entries: dict[UUID, list[TimetableEntry]] = {sid: [] for sid in section_ids}

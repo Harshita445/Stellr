@@ -10,8 +10,9 @@ import {
   LogOut,
   UserPlus,
   Loader2,
+  Clock,
 } from "lucide-react";
-import { api, GroupDetail, GroupMember } from "@/lib/api-client";
+import { api, GroupDetail, GroupMember, AvailabilityResponse } from "@/lib/api-client";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,6 +26,8 @@ export default function GroupDetailPage() {
   const [newName, setNewName] = useState("");
   const [addingMember, setAddingMember] = useState(false);
   const [memberInput, setMemberInput] = useState("");
+  const [availability, setAvailability] = useState<AvailabilityResponse | null>(null);
+  const [availLoading, setAvailLoading] = useState(true);
 
   const loadGroup = useCallback(async () => {
     try {
@@ -39,9 +42,22 @@ export default function GroupDetailPage() {
     }
   }, [id, router]);
 
+  const loadAvailability = useCallback(async () => {
+    try {
+      setAvailLoading(true);
+      const data = await api.availability.compareGroup(id);
+      setAvailability(data);
+    } catch {
+      setAvailability(null);
+    } finally {
+      setAvailLoading(false);
+    }
+  }, [id]);
+
   useEffect(() => {
     loadGroup();
-  }, [loadGroup]);
+    loadAvailability();
+  }, [loadGroup, loadAvailability]);
 
   const handleRename = async () => {
     if (!group || !newName.trim() || newName === group.name) return;
@@ -260,18 +276,59 @@ export default function GroupDetailPage() {
         <CardHeader>
           <CardTitle>
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-accent-400" />
-              Availability
+              <Clock className="w-4 h-4 text-accent-400" />
+              Alignment
             </div>
           </CardTitle>
         </CardHeader>
-        <div className="flex flex-col items-center gap-2 py-6 text-text-muted">
-          <Users className="w-8 h-8 opacity-30" />
-          <p className="text-sm">Coming in Phase 8</p>
-          <p className="text-xs text-text-muted/60">
-            Overlapping free periods will appear here
-          </p>
-        </div>
+        {availLoading ? (
+          <div className="space-y-2 py-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        ) : availability && availability.shared_windows.length > 0 ? (
+          <div className="space-y-3">
+            {availability.current_overlap && (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-status-free/10 text-status-free text-sm">
+                <span className="w-2 h-2 rounded-full bg-status-free" />
+                All members free now
+              </div>
+            )}
+            <div className="space-y-1.5">
+              <p className="text-xs text-text-muted px-1">Shared free windows today</p>
+              {availability.shared_windows.map((w, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5"
+                >
+                  <span className="text-sm text-text-primary">
+                    {w.start} – {w.end}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {availability.next_slot && !availability.current_overlap && (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-accent-500/10 text-accent-300 text-sm">
+                <Clock className="w-3.5 h-3.5 shrink-0" />
+                Next: {availability.next_slot.start} – {availability.next_slot.end}
+              </div>
+            )}
+            {availability.longest_window && (
+              <p className="text-xs text-text-muted px-1">
+                Longest window: {availability.longest_window.start} – {availability.longest_window.end}
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-2 py-6 text-text-muted">
+            <Clock className="w-8 h-8 opacity-30" />
+            <p className="text-sm">No shared free time today</p>
+            <p className="text-xs text-text-muted/60">
+              Members might have different timetables
+            </p>
+          </div>
+        )}
       </Card>
     </main>
   );

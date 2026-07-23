@@ -9,6 +9,11 @@ from app.repositories.base import BaseRepository
 class GroupMemberRepository(BaseRepository[GroupMember]):
     model_class = GroupMember
 
+    async def list_by_group(self, group_id: UUID) -> list[GroupMember]:
+        stmt = select(GroupMember).where(GroupMember.group_id == group_id)
+        result = await self.session.execute(stmt)
+        return list(result.scalars().all())
+
     async def get_membership(self, group_id: UUID, user_id: UUID) -> GroupMember | None:
         stmt = select(GroupMember).where(
             GroupMember.group_id == group_id,

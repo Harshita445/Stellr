@@ -103,6 +103,18 @@ export interface GroupListResponse {
   groups: GroupSummary[];
 }
 
+export interface SharedWindow {
+  start: string;
+  end: string;
+}
+
+export interface AvailabilityResponse {
+  shared_windows: SharedWindow[];
+  current_overlap: boolean;
+  next_slot: SharedWindow | null;
+  longest_window: SharedWindow | null;
+}
+
 export const api = {
   friends: {
     list: () => request<{ friends: FriendRelation[] }>("GET", "/friends"),
@@ -112,6 +124,12 @@ export const api = {
       request<AddFriendResult>("POST", `/friends/${userId}`),
     remove: (userId: string) =>
       request<void>("DELETE", `/friends/${userId}`),
+  },
+  availability: {
+    compareFriend: (friendId: string) =>
+      request<AvailabilityResponse>("GET", `/availability/friend/${friendId}`),
+    compareGroup: (groupId: string) =>
+      request<AvailabilityResponse>("GET", `/availability/group/${groupId}`),
   },
   groups: {
     list: () => request<GroupListResponse>("GET", "/groups"),

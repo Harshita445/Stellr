@@ -24,6 +24,7 @@ from app.repositories.timetable_entry_repository import TimetableEntryRepository
 from app.repositories.timeslot_repository import TimeslotRepository
 from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
+from app.services.availability_service import AvailabilityService
 from app.services.dashboard_service import DashboardService
 from app.services.friend_service import FriendService
 from app.services.group_service import GroupService
@@ -153,6 +154,18 @@ def get_group_service(
         group_repo=group_repo,
         group_member_repo=group_member_repo,
         user_repo=user_repo,
+    )
+
+
+def get_availability_service(
+    user_repo: UserRepository = Depends(get_user_repo),
+    tt_entry_repo: TimetableEntryRepository = Depends(get_tt_entry_repo),
+    group_member_repo: GroupMemberRepository = Depends(get_group_member_repo),
+) -> AvailabilityService:
+    return AvailabilityService(
+        user_repo=user_repo,
+        tt_entry_repo=tt_entry_repo,
+        group_member_repo=group_member_repo,
     )
 
 
