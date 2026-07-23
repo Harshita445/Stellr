@@ -1,4 +1,5 @@
 import { VisibleStars } from "@/components/dashboard/visible-stars";
+import { Constellations } from "@/components/dashboard/constellations";
 
 export default function DashboardPage() {
   return (
@@ -13,6 +14,7 @@ export default function DashboardPage() {
       </div>
 
       <VisibleStars />
+      <Constellations />
     </main>
   );
 }

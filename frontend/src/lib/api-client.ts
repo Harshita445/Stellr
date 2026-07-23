@@ -79,6 +79,30 @@ async function request<T>(
   return res.json();
 }
 
+export interface GroupMember {
+  id: string;
+  user_id: string;
+  display_name: string;
+  section_code: string | null;
+  joined_at: string;
+}
+
+export interface GroupSummary {
+  id: string;
+  name: string;
+  created_by: string | null;
+  member_count: number;
+  created_at: string;
+}
+
+export interface GroupDetail extends GroupSummary {
+  members: GroupMember[];
+}
+
+export interface GroupListResponse {
+  groups: GroupSummary[];
+}
+
 export const api = {
   friends: {
     list: () => request<{ friends: FriendRelation[] }>("GET", "/friends"),
@@ -88,5 +112,20 @@ export const api = {
       request<AddFriendResult>("POST", `/friends/${userId}`),
     remove: (userId: string) =>
       request<void>("DELETE", `/friends/${userId}`),
+  },
+  groups: {
+    list: () => request<GroupListResponse>("GET", "/groups"),
+    create: (name: string, memberIds: string[]) =>
+      request<GroupDetail>("POST", "/groups", { name, member_ids: memberIds }),
+    detail: (groupId: string) =>
+      request<GroupDetail>("GET", `/groups/${groupId}`),
+    rename: (groupId: string, name: string) =>
+      request<GroupDetail>("PATCH", `/groups/${groupId}`, { name }),
+    delete: (groupId: string) =>
+      request<void>("DELETE", `/groups/${groupId}`),
+    addMember: (groupId: string, userId: string) =>
+      request<GroupMember>("POST", `/groups/${groupId}/members`, { user_id: userId }),
+    removeMember: (groupId: string, userId: string) =>
+      request<void>("DELETE", `/groups/${groupId}/members/${userId}`),
   },
 };

@@ -17,6 +17,8 @@ from app.core.security import decode_access_token
 from app.repositories.course_repository import CourseRepository
 from app.repositories.device_repository import DeviceRepository
 from app.repositories.friend_repository import FriendRepository
+from app.repositories.group_member_repository import GroupMemberRepository
+from app.repositories.group_repository import GroupRepository
 from app.repositories.section_repository import SectionRepository
 from app.repositories.timetable_entry_repository import TimetableEntryRepository
 from app.repositories.timeslot_repository import TimeslotRepository
@@ -24,6 +26,7 @@ from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
 from app.services.dashboard_service import DashboardService
 from app.services.friend_service import FriendService
+from app.services.group_service import GroupService
 from app.services.timetable_import_service import TimetableImportService
 from app.services.timetable_parser_service import TimetableParserService
 from app.services.timetable_query_service import TimetableQueryService
@@ -127,6 +130,28 @@ def get_friend_service(
 ) -> FriendService:
     return FriendService(
         friend_repo=friend_repo,
+        user_repo=user_repo,
+    )
+
+
+# ── Repository Dependencies (Groups) ─────────────────────────────────
+
+def get_group_repo(db: AsyncSession = Depends(get_db)) -> GroupRepository:
+    return GroupRepository(db)
+
+
+def get_group_member_repo(db: AsyncSession = Depends(get_db)) -> GroupMemberRepository:
+    return GroupMemberRepository(db)
+
+
+def get_group_service(
+    group_repo: GroupRepository = Depends(get_group_repo),
+    group_member_repo: GroupMemberRepository = Depends(get_group_member_repo),
+    user_repo: UserRepository = Depends(get_user_repo),
+) -> GroupService:
+    return GroupService(
+        group_repo=group_repo,
+        group_member_repo=group_member_repo,
         user_repo=user_repo,
     )
 
