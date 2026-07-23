@@ -53,8 +53,10 @@ def register_error_handlers(app: FastAPI) -> None:
         logger.error(
             "Unhandled exception",
             exc_info=exc,
-            request_id=getattr(request.state, "request_id", ""),
-            path=request.url.path,
+            extra={
+                "request_id": getattr(request.state, "request_id", ""),
+                "path": request.url.path,
+            },
         )
         return JSONResponse(
             status_code=500,

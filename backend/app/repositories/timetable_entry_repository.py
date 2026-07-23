@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy import delete, select
+from sqlalchemy.orm import selectinload
 
 from app.models.timetable_entry import TimetableEntry
 from app.repositories.base import BaseRepository
@@ -12,6 +13,7 @@ class TimetableEntryRepository(BaseRepository[TimetableEntry]):
     async def get_by_section(self, section_id: UUID, day_of_week: int | None = None) -> list[TimetableEntry]:
         stmt = (
             select(TimetableEntry)
+            .options(selectinload(TimetableEntry.course), selectinload(TimetableEntry.timeslot))
             .where(TimetableEntry.section_id == section_id)
         )
         if day_of_week is not None:

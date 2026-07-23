@@ -21,6 +21,7 @@ from app.repositories.timetable_entry_repository import TimetableEntryRepository
 from app.repositories.timeslot_repository import TimeslotRepository
 from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
+from app.services.dashboard_service import DashboardService
 from app.services.timetable_import_service import TimetableImportService
 from app.services.timetable_parser_service import TimetableParserService
 from app.services.timetable_query_service import TimetableQueryService
@@ -109,6 +110,20 @@ def get_timetable_query_service(
     tt_entry_repo = TimetableEntryRepository(db)
     timeslot_repo = TimeslotRepository(db)
     return TimetableQueryService(
+        tt_entry_repo=tt_entry_repo,
+        timeslot_repo=timeslot_repo,
+    )
+
+
+# ── Dashboard Service Dependencies ────────────────────────────────────
+
+def get_dashboard_service(
+    user_repo: UserRepository = Depends(get_user_repo),
+    tt_entry_repo: TimetableEntryRepository = Depends(get_tt_entry_repo),
+    timeslot_repo: TimeslotRepository = Depends(get_timeslot_repo),
+) -> DashboardService:
+    return DashboardService(
+        user_repo=user_repo,
         tt_entry_repo=tt_entry_repo,
         timeslot_repo=timeslot_repo,
     )
