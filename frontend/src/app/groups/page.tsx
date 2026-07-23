@@ -46,7 +46,7 @@ export default function GroupsPage() {
             <ArrowLeft className="w-5 h-5" />
           </a>
           <div>
-            <h1 className="text-2xl font-bold text-text-primary">Constellations</h1>
+            <h1 className="text-2xl font-bold text-text-primary">Your Groups</h1>
             <p className="text-sm text-text-muted mt-0.5">
               Your groups and teams
             </p>
@@ -83,13 +83,13 @@ export default function GroupsPage() {
         <Card>
           <div className="flex flex-col items-center gap-2 py-8 text-text-muted">
             <Users className="w-10 h-10 opacity-30" />
-            <p className="text-sm">No constellations yet</p>
+            <p className="text-sm">No groups yet</p>
             <p className="text-xs text-text-muted/60">
               Create a group to start comparing availability
             </p>
             <Button onClick={() => setShowCreate(true)}>
               <Plus className="w-4 h-4" />
-              Create Constellation
+              Create Group
             </Button>
           </div>
         </Card>

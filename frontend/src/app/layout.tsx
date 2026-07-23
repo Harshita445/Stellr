@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Constellation",
-  description: "Social timetable platform",
+  title: "Stellr",
+  description: "Your people. Your time. Aligned.",
 };
 
 export default function RootLayout({

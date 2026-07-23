@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Star, UserPlus, UserMinus, AlertCircle } from "lucide-react";
+import { Star, UserPlus, UserMinus, AlertCircle, Users } from "lucide-react";
 import { api, FriendRelation } from "@/lib/api-client";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -94,10 +94,13 @@ export function VisibleStars() {
           <CardTitle>
             <div className="flex items-center gap-2">
               <Star className="w-4 h-4 text-accent-400" />
-              Visible Stars
+              Your People
             </div>
           </CardTitle>
         </CardHeader>
+        <p className="text-xs text-text-muted/70 -mt-3 mb-4 px-0">
+          People you can see are free right now
+        </p>
         <div className="space-y-3">
           {[1, 2].map((i) => (
             <div key={i} className="flex items-center gap-3">
@@ -121,10 +124,13 @@ export function VisibleStars() {
           <CardTitle>
             <div className="flex items-center gap-2">
               <Star className="w-4 h-4 text-accent-400" />
-              Visible Stars
+              Your People
             </div>
           </CardTitle>
         </CardHeader>
+        <p className="text-xs text-text-muted/70 -mt-3 mb-4 px-6">
+          People you can see are free right now
+        </p>
         <div className="flex flex-col items-center gap-3 py-6 text-center">
           <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center">
             <AlertCircle className="w-6 h-6 text-red-400" />
@@ -152,10 +158,13 @@ export function VisibleStars() {
           <CardTitle>
             <div className="flex items-center gap-2">
               <Star className="w-4 h-4 text-accent-400" />
-              Visible Stars
+              Your People
             </div>
           </CardTitle>
         </CardHeader>
+        <p className="text-xs text-text-muted/70 -mt-3 mb-4 px-6">
+          People you can see are free right now
+        </p>
         <div className="flex flex-col items-center gap-4 py-10 text-center relative">
           <div className="w-16 h-16 rounded-full bg-primary-500/8 flex items-center justify-center">
             <Star className="w-8 h-8 text-primary-400/40" />
@@ -177,7 +186,7 @@ export function VisibleStars() {
               Find Stars
             </a>
             <p className="text-xs text-text-muted/60">
-              or create a Constellation with friends later
+              or create a Group with friends later
             </p>
           </div>
         </div>
@@ -192,13 +201,16 @@ export function VisibleStars() {
         <CardTitle>
           <div className="flex items-center gap-2">
             <Star className="w-4 h-4 text-accent-400" />
-            Visible Stars
+            Your People
             <span className="text-xs font-normal text-text-muted ml-1">
               ({friends.length})
             </span>
           </div>
         </CardTitle>
       </CardHeader>
+      <p className="text-xs text-text-muted/70 -mt-3 mb-4 px-6">
+        People you can see are free right now
+      </p>
       <div className="space-y-2">
         {friends.map((fr) => {
           const isFree = availMap.get(fr.user.id) ?? false;

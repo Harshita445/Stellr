@@ -41,7 +41,7 @@ export function CreateGroupDialog({ onClose, onCreated }: CreateGroupDialogProps
       <div className="glass rounded-2xl p-6 w-full max-w-md space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-text-primary">
-            New Constellation
+            New Group
           </h2>
           <button
             onClick={onClose}

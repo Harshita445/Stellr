@@ -22,7 +22,7 @@ export function Constellations() {
       setGroups(data.groups);
     } catch (err: unknown) {
       const msg =
-        err instanceof Error ? err.message : "Could not load constellations";
+        err instanceof Error ? err.message : "Could not load your groups";
       setError(msg);
     } finally {
       setLoading(false);
@@ -41,10 +41,13 @@ export function Constellations() {
           <CardTitle>
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-accent-400" />
-              Constellations
+              Your Groups
             </div>
           </CardTitle>
         </CardHeader>
+        <p className="text-xs text-text-muted/70 -mt-3 mb-4 px-0">
+          Compare schedules and find shared time
+        </p>
         <div className="space-y-3">
           {[1, 2].map((i) => (
             <div key={i} className="flex items-center gap-3">
@@ -68,10 +71,13 @@ export function Constellations() {
           <CardTitle>
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-accent-400" />
-              Constellations
+              Your Groups
             </div>
           </CardTitle>
         </CardHeader>
+        <p className="text-xs text-text-muted/70 -mt-3 mb-4 px-6">
+          Compare schedules and find shared time
+        </p>
         <div className="flex flex-col items-center gap-3 py-6 text-center">
           <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center">
             <AlertCircle className="w-6 h-6 text-red-400" />
@@ -92,7 +98,7 @@ export function Constellations() {
         <CardTitle>
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-accent-400" />
-            Constellations
+            Your Groups
             {groups.length > 0 && (
               <span className="text-xs font-normal text-text-muted ml-1">
                 ({groups.length})
@@ -104,12 +110,15 @@ export function Constellations() {
           <a
             href="/groups"
             className="text-text-muted hover:text-text-primary transition-colors"
-            aria-label="View all constellations"
+            aria-label="View all groups"
           >
             <ExternalLink className="w-5 h-5" />
           </a>
         )}
       </CardHeader>
+      <p className="text-xs text-text-muted/70 -mt-3 mb-4 px-6">
+        Compare schedules and find shared time
+      </p>
 
       {showCreate && (
         <CreateGroupDialog
@@ -134,16 +143,16 @@ export function Constellations() {
           </div>
           <div>
             <p className="text-base font-semibold text-text-primary">
-              No constellations yet
+              No groups yet
             </p>
             <p className="text-sm text-text-muted mt-1 max-w-xs">
-              Create a group with your friends to see your constellations
+              Create a group with your friends to find shared free time
             </p>
           </div>
           <div className="flex flex-col items-center gap-2">
             <Button onClick={() => setShowCreate(true)}>
               <Plus className="w-4 h-4" />
-              Create Constellation
+              Create Group
             </Button>
             <a
               href="/friends"
@@ -177,7 +186,7 @@ export function Constellations() {
               href="/groups"
               className="block text-center text-xs text-accent-400 hover:text-accent-300 py-2 transition-colors"
             >
-              View all {groups.length} constellations
+              View all {groups.length} groups
             </a>
           )}
         </div>

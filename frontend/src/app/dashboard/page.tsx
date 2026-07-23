@@ -119,7 +119,7 @@ export default function DashboardPage() {
               Stellr
             </h1>
             <p className="text-xs md:text-sm text-text-muted leading-snug">
-              Find your people. Find your time.
+              Your people. Your time. Aligned.
             </p>
           </div>
         </motion.div>
@@ -144,7 +144,7 @@ export default function DashboardPage() {
           />
           <StatChip
             icon={Users}
-            label="Constellations"
+            label="Your Groups"
             value={stats ? `${stats.groupCount}` : "—"}
             loading={loading}
           />

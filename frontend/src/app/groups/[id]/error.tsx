@@ -13,15 +13,15 @@ export default function GroupDetailError({
   return (
     <main className="min-h-screen p-4 max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
-        <a href="/groups" className="text-text-muted hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-lg" aria-label="Back to constellations">
+        <a href="/groups" className="text-text-muted hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-lg" aria-label="Back to groups">
           <ArrowLeft className="w-5 h-5" />
         </a>
-        <h1 className="text-2xl font-bold text-text-primary">Constellation</h1>
+        <h1 className="text-2xl font-bold text-text-primary">Group</h1>
       </div>
       <div className="flex flex-col items-center justify-center gap-4 py-16 text-center glass rounded-2xl p-5">
         <AlertTriangle className="w-10 h-10 text-red-400/70" />
         <div>
-          <p className="text-text-primary font-medium">Could not load constellation</p>
+          <p className="text-text-primary font-medium">Could not load group</p>
           <p className="text-sm text-text-muted mt-1">
             Something went wrong. Please try again.
           </p>
@@ -33,7 +33,7 @@ export default function GroupDetailError({
           </Button>
           <a href="/groups">
             <Button variant="ghost" size="sm">
-              Back to constellations
+              Back to groups
             </Button>
           </a>
         </div>

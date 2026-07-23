@@ -15,7 +15,7 @@ export default function GroupsError({
       <div className="flex flex-col items-center justify-center gap-4 py-16 text-center glass rounded-2xl p-5">
         <AlertTriangle className="w-10 h-10 text-red-400/70" />
         <div>
-          <p className="text-text-primary font-medium">Could not load Constellations</p>
+          <p className="text-text-primary font-medium">Could not load your groups</p>
           <p className="text-sm text-text-muted mt-1">
             Something went wrong. Please try again.
           </p>

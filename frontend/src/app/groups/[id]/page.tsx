@@ -64,7 +64,7 @@ export default function GroupDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm("Delete this constellation? This cannot be undone.")) return;
+    if (!confirm("Delete this group? This cannot be undone.")) return;
     try {
       await api.groups.delete(id);
       router.push("/groups");
@@ -74,7 +74,7 @@ export default function GroupDetailPage() {
   };
 
   const handleLeave = async () => {
-    if (!confirm("Leave this constellation?")) return;
+    if (!confirm("Leave this group?")) return;
     try {
       await api.groups.removeMember(id, memberInput);
       router.push("/groups");
@@ -148,7 +148,7 @@ export default function GroupDetailPage() {
         <a
           href="/groups"
           className="text-text-muted hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-lg"
-          aria-label="Back to constellations"
+          aria-label="Back to groups"
         >
           <ArrowLeft className="w-5 h-5" />
         </a>
@@ -193,7 +193,7 @@ export default function GroupDetailPage() {
           <div className="flex gap-2">
             <Button variant="danger" size="sm" onClick={handleDelete}>
               <Trash2 className="w-4 h-4" />
-              Delete Constellation
+              Delete Group
             </Button>
           </div>
         </div>
