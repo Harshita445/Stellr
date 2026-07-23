@@ -35,12 +35,13 @@ export default function GroupsPage() {
   };
 
   return (
-    <main className="min-h-screen p-4 max-w-2xl mx-auto space-y-6">
+    <main className="min-h-screen p-4 max-w-2xl mx-auto space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <a
             href="/dashboard"
-            className="text-text-muted hover:text-text-primary transition-colors"
+            className="text-text-muted hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-lg"
+            aria-label="Back to dashboard"
           >
             <ArrowLeft className="w-5 h-5" />
           </a>

@@ -4,7 +4,7 @@ import { NextAlignment } from "@/components/dashboard/next-alignment";
 
 export default function DashboardPage() {
   return (
-    <main className="min-h-screen p-4 max-w-2xl mx-auto space-y-6">
+    <main className="min-h-screen p-4 max-w-2xl mx-auto space-y-6 animate-fade-in">
       <div>
         <h1 className="text-2xl font-bold text-text-primary">
           Your Space

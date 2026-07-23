@@ -90,34 +90,7 @@ class AvailabilityService:
             }
 
         user_ids = [m.user_id for m in members]
-        users = []
-        for uid in user_ids:
-            u = await self.user_repo.find_by_id(uid)
-            if u and u.section_id:
-                users.append(u)
-
-        section_ids = list({u.section_id for u in users if u.section_id})
-        by_section = await self.tt_entry_repo.get_by_sections(section_ids, day_of_week)
-
-        # Build busy arrays, keeping per-user mapping
-        user_to_section: dict[UUID, UUID] = {}
-        for u in users:
-            if u.section_id:
-                user_to_section[u.id] = u.section_id
-
-        busy_arrays: list[list[int]] = []
-        for uid in user_ids:
-            section_id = user_to_section.get(uid)
-            if section_id is None:
-                busy_arrays.append([0] * SLOTS_PER_DAY)
-                continue
-            entries = by_section.get(section_id, [])
-            busy_indices = {
-                e.timeslot.slot_index
-                for e in entries
-                if e.timeslot is not None
-            }
-            busy_arrays.append(slots_to_busy_array(busy_indices))
+        _, busy_arrays = await self._build_busy_arrays(user_ids, day_of_week)
 
         # Compute aggregate
         result = compute_availability(busy_arrays, now=now_time)
@@ -139,46 +112,31 @@ class AvailabilityService:
         result["member_availabilities"] = member_availabilities
         return result
 
-    async def _compare_users(
+    async def _build_busy_arrays(
         self,
         user_ids: list[UUID],
         day_of_week: int,
-        now_time = None,
-    ) -> dict:
-        """Core internal method: compute shared availability for a set of users."""
-        user_ids = list(set(user_ids))
-        if len(user_ids) < 2:
-            return {
-                "shared_windows": [],
-                "current_overlap": False,
-                "next_slot": None,
-                "longest_window": None,
-            }
+    ) -> tuple[list[dict], list[list[int]]]:
+        """Resolve users to sections and build per-user busy arrays.
 
+        Returns (resolved_users, busy_arrays) where resolved_users contains
+        dicts with 'id' and 'section_id' for users that have a section.
+        busy_arrays parallels user_ids (same index).
+        """
+        user_ids = list(set(user_ids))
         users = []
         for uid in user_ids:
             u = await self.user_repo.find_by_id(uid)
             if u and u.section_id:
-                users.append(u)
+                users.append({"id": u.id, "section_id": u.section_id})
 
         if len(users) < 2:
-            return {
-                "shared_windows": [],
-                "current_overlap": False,
-                "next_slot": None,
-                "longest_window": None,
-            }
+            return [], []
 
-        # Fetch timetable entries for all sections in one query
-        section_ids = list({u.section_id for u in users if u.section_id})
+        section_ids = list({u["section_id"] for u in users})
         by_section = await self.tt_entry_repo.get_by_sections(section_ids, day_of_week)
 
-        # Map user → section → busy slot indices → bit array
-        user_to_section: dict[UUID, UUID] = {}
-        for u in users:
-            if u.section_id:
-                user_to_section[u.id] = u.section_id
-
+        user_to_section = {u["id"]: u["section_id"] for u in users}
         busy_arrays: list[list[int]] = []
         for uid in user_ids:
             section_id = user_to_section.get(uid)
@@ -193,6 +151,23 @@ class AvailabilityService:
             }
             busy_arrays.append(slots_to_busy_array(busy_indices))
 
+        return users, busy_arrays
+
+    async def _compare_users(
+        self,
+        user_ids: list[UUID],
+        day_of_week: int,
+        now_time = None,
+    ) -> dict:
+        """Core internal method: compute shared availability for a set of users."""
+        _, busy_arrays = await self._build_busy_arrays(user_ids, day_of_week)
+        if not busy_arrays:
+            return {
+                "shared_windows": [],
+                "current_overlap": False,
+                "next_slot": None,
+                "longest_window": None,
+            }
         return compute_availability(busy_arrays, now=now_time)
 
     async def _stub_section_availability(self) -> None:

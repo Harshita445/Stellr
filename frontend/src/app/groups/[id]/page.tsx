@@ -147,7 +147,8 @@ export default function GroupDetailPage() {
       <div className="flex items-center gap-3">
         <a
           href="/groups"
-          className="text-text-muted hover:text-text-primary transition-colors"
+          className="text-text-muted hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded-lg"
+          aria-label="Back to constellations"
         >
           <ArrowLeft className="w-5 h-5" />
         </a>

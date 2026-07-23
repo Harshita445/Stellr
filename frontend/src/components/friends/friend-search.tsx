@@ -58,7 +58,8 @@ export function FriendSearch({ existingFriendIds, onAdd, onRemove }: FriendSearc
         {query && (
           <button
             onClick={() => setQuery("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 rounded"
+            aria-label="Clear search"
           >
             <X className="w-4 h-4" />
           </button>
