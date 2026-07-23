@@ -111,7 +111,7 @@ def merge_free_windows(
     return windows
 
 
-def _get_now_slot_index(
+def current_slot_index(
     now: datetime.time,
     slot_boundaries: dict[int, tuple[int, int, int, int]] = SLOT_BOUNDARIES,
 ) -> int | None:
@@ -166,7 +166,7 @@ def compute_availability(
     current_overlap = False
     next_slot = None
     if now is not None:
-        now_idx = _get_now_slot_index(now, slot_boundaries)
+        now_idx = current_slot_index(now, slot_boundaries)
         if now_idx is not None and shared_free[now_idx] == 1:
             current_overlap = True
 

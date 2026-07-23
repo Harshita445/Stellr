@@ -1,9 +1,17 @@
+from uuid import UUID
+
 from pydantic import BaseModel, Field
 
 
 class SharedWindow(BaseModel):
     start: str = Field(..., description="Start time in HH:MM format")
     end: str = Field(..., description="End time in HH:MM format")
+
+
+class MemberAvailability(BaseModel):
+    user_id: UUID = Field(..., description="User UUID")
+    display_name: str = Field(..., description="Display name")
+    is_free_now: bool = Field(..., description="Is this user free right now?")
 
 
 class AvailabilityResponse(BaseModel):
@@ -22,4 +30,8 @@ class AvailabilityResponse(BaseModel):
     longest_window: SharedWindow | None = Field(
         None,
         description="Longest contiguous block where all users are free today",
+    )
+    member_availabilities: list[MemberAvailability] = Field(
+        default_factory=list,
+        description="Per-member free/busy status for the current time slot",
     )

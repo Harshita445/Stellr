@@ -25,12 +25,13 @@ operation is O(N * 9) = O(N). The merge is O(9) = O(1).
 
 from uuid import UUID
 
-from app.models.timeslot import SLOTS_PER_DAY
+from app.models.timeslot import SLOTS_PER_DAY, SLOT_BOUNDARIES
 from app.repositories.group_member_repository import GroupMemberRepository
 from app.repositories.timetable_entry_repository import TimetableEntryRepository
 from app.repositories.user_repository import UserRepository
 from app.utils.time_utils import (
     compute_availability,
+    current_slot_index,
     slots_to_busy_array,
 )
 
@@ -69,10 +70,74 @@ class AvailabilityService:
         """Group availability comparison.
 
         Fetches all group members and computes shared free windows.
+        Also returns per-member free/busy status for the current slot.
         """
         members = await self.group_member_repo.list_by_group(group_id)
+        if len(members) < 2:
+            return {
+                "shared_windows": [],
+                "current_overlap": False,
+                "next_slot": None,
+                "longest_window": None,
+                "member_availabilities": [
+                    {
+                        "user_id": str(m.user_id),
+                        "display_name": m.display_name,
+                        "is_free_now": False,
+                    }
+                    for m in members
+                ],
+            }
+
         user_ids = [m.user_id for m in members]
-        return await self._compare_users(user_ids, day_of_week, now_time)
+        users = []
+        for uid in user_ids:
+            u = await self.user_repo.find_by_id(uid)
+            if u and u.section_id:
+                users.append(u)
+
+        section_ids = list({u.section_id for u in users if u.section_id})
+        by_section = await self.tt_entry_repo.get_by_sections(section_ids, day_of_week)
+
+        # Build busy arrays, keeping per-user mapping
+        user_to_section: dict[UUID, UUID] = {}
+        for u in users:
+            if u.section_id:
+                user_to_section[u.id] = u.section_id
+
+        busy_arrays: list[list[int]] = []
+        for uid in user_ids:
+            section_id = user_to_section.get(uid)
+            if section_id is None:
+                busy_arrays.append([0] * SLOTS_PER_DAY)
+                continue
+            entries = by_section.get(section_id, [])
+            busy_indices = {
+                e.timeslot.slot_index
+                for e in entries
+                if e.timeslot is not None
+            }
+            busy_arrays.append(slots_to_busy_array(busy_indices))
+
+        # Compute aggregate
+        result = compute_availability(busy_arrays, now=now_time)
+
+        # Compute per-member free/busy for the current slot
+        now_idx = current_slot_index(now_time, SLOT_BOUNDARIES) if now_time else None
+        member_availabilities = []
+        for i, m in enumerate(members):
+            busy_arr = busy_arrays[i] if i < len(busy_arrays) else [0] * SLOTS_PER_DAY
+            is_free = False
+            if now_idx is not None and now_idx < len(busy_arr):
+                is_free = busy_arr[now_idx] == 0
+            member_availabilities.append({
+                "user_id": str(m.user_id),
+                "display_name": m.display_name,
+                "is_free_now": is_free,
+            })
+
+        result["member_availabilities"] = member_availabilities
+        return result
 
     async def _compare_users(
         self,

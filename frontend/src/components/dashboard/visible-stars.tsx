@@ -7,6 +7,49 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
+function useFriendAvailabilities(friends: FriendRelation[]) {
+  const [availMap, setAvailMap] = useState<Map<string, boolean>>(new Map());
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (friends.length === 0) {
+      setAvailMap(new Map());
+      return;
+    }
+
+    let cancelled = false;
+    const fetchAll = async () => {
+      setLoading(true);
+      const map = new Map<string, boolean>();
+      const results = await Promise.allSettled(
+        friends.map((fr) => api.availability.compareFriend(fr.user.id)),
+      );
+      friends.forEach((fr, i) => {
+        const r = results[i];
+        if (r.status === "fulfilled") {
+          map.set(fr.user.id, r.value.current_overlap);
+        } else {
+          map.set(fr.user.id, false);
+        }
+      });
+      if (!cancelled) {
+        setAvailMap(map);
+        setLoading(false);
+      }
+    };
+
+    fetchAll();
+
+    const interval = setInterval(fetchAll, 60000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [friends]);
+
+  return { availMap, loading };
+}
+
 export function VisibleStars() {
   const [friends, setFriends] = useState<FriendRelation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +61,7 @@ export function VisibleStars() {
       setError(null);
       const data = await api.friends.list();
       setFriends(data.friends);
-    } catch (err) {
+    } catch {
       setError("Could not load friends");
     } finally {
       setLoading(false);
@@ -28,6 +71,8 @@ export function VisibleStars() {
   useEffect(() => {
     loadFriends();
   }, [loadFriends]);
+
+  const { availMap } = useFriendAvailabilities(friends);
 
   const handleRemove = async (userId: string) => {
     const prev = [...friends];
@@ -124,32 +169,42 @@ export function VisibleStars() {
         </CardTitle>
       </CardHeader>
       <div className="space-y-2">
-        {friends.map((fr) => (
-          <div
-            key={fr.id}
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors group"
-          >
-            <div className="w-10 h-10 rounded-full bg-primary-500/20 flex items-center justify-center text-primary-400 text-sm font-semibold shrink-0">
-              {fr.user.display_name.charAt(0).toUpperCase()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-text-primary truncate">
-                {fr.user.display_name}
-              </p>
-              {fr.user.section_code && (
-                <p className="text-xs text-text-muted">{fr.user.section_code}</p>
-              )}
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleRemove(fr.user.id)}
-              className="opacity-0 group-hover:opacity-100"
+        {friends.map((fr) => {
+          const isFree = availMap.get(fr.user.id) ?? false;
+          return (
+            <div
+              key={fr.id}
+              className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors group"
             >
-              <UserMinus className="w-4 h-4" />
-            </Button>
-          </div>
-        ))}
+              <div className="relative shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary-500/20 flex items-center justify-center text-primary-400 text-sm font-semibold">
+                  {fr.user.display_name.charAt(0).toUpperCase()}
+                </div>
+                <span
+                  className={`absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-space-900 ${
+                    isFree ? "bg-status-available" : "bg-space-400"
+                  }`}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-text-primary truncate">
+                  {fr.user.display_name}
+                </p>
+                <p className={`text-xs ${isFree ? "text-status-available" : "text-text-muted"}`}>
+                  {isFree ? "Free now" : fr.user.section_code ?? "Busy"}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleRemove(fr.user.id)}
+                className="opacity-0 group-hover:opacity-100"
+              >
+                <UserMinus className="w-4 h-4" />
+              </Button>
+            </div>
+          );
+        })}
       </div>
     </Card>
   );

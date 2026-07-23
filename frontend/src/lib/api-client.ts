@@ -108,11 +108,18 @@ export interface SharedWindow {
   end: string;
 }
 
+export interface MemberAvailability {
+  user_id: string;
+  display_name: string;
+  is_free_now: boolean;
+}
+
 export interface AvailabilityResponse {
   shared_windows: SharedWindow[];
   current_overlap: boolean;
   next_slot: SharedWindow | null;
   longest_window: SharedWindow | null;
+  member_availabilities: MemberAvailability[];
 }
 
 export const api = {

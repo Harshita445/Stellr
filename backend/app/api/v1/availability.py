@@ -25,6 +25,7 @@ from app.api.deps import (
 from app.models.timeslot import DAYS_OF_WEEK
 from app.schemas.availability.responses import (
     AvailabilityResponse,
+    MemberAvailability,
     SharedWindow,
 )
 from app.services.availability_service import AvailabilityService
@@ -42,6 +43,10 @@ def _now_time() -> time:
 
 
 def _to_response(result: dict) -> AvailabilityResponse:
+    member_availabilities_raw = result.get("member_availabilities", [])
+    member_availabilities = [
+        MemberAvailability(**m) for m in member_availabilities_raw
+    ]
     return AvailabilityResponse(
         shared_windows=[
             SharedWindow(start=w["start"], end=w["end"])
@@ -64,6 +69,7 @@ def _to_response(result: dict) -> AvailabilityResponse:
             if result["longest_window"]
             else None
         ),
+        member_availabilities=member_availabilities,
     )
 
 
