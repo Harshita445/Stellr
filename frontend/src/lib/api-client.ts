@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "/api/v1";
 
 export interface FriendUser {
   id: string;
@@ -108,6 +108,32 @@ export interface SharedWindow {
   end: string;
 }
 
+export interface DashboardScheduleItem {
+  course_code: string;
+  course_name: string;
+  start_time: string;
+  end_time: string;
+  venue: string | null;
+  slot_index: number | null;
+}
+
+export interface DashboardFreeWindow {
+  start_time: string;
+  end_time: string;
+  duration_minutes: number;
+}
+
+export interface DashboardResponse {
+  date: string;
+  day_name: string;
+  section_code: string | null;
+  today_schedule: DashboardScheduleItem[];
+  current_class: DashboardScheduleItem & { time_remaining_minutes: number } | null;
+  next_class: DashboardScheduleItem | null;
+  time_until_next_minutes: number | null;
+  free_windows: DashboardFreeWindow[];
+}
+
 export interface MemberAvailability {
   user_id: string;
   display_name: string;
@@ -123,6 +149,9 @@ export interface AvailabilityResponse {
 }
 
 export const api = {
+  dashboard: {
+    get: () => request<DashboardResponse>("GET", "/dashboard"),
+  },
   friends: {
     list: () => request<{ friends: FriendRelation[] }>("GET", "/friends"),
     search: (q: string) =>

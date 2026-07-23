@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Users, Plus, ExternalLink } from "lucide-react";
+import { Users, Plus, ExternalLink, Sparkles, AlertCircle } from "lucide-react";
 import { api, GroupSummary } from "@/lib/api-client";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,15 +11,19 @@ import { CreateGroupDialog } from "@/components/groups/create-group-dialog";
 export function Constellations() {
   const [groups, setGroups] = useState<GroupSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
 
   const loadGroups = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await api.groups.list();
       setGroups(data.groups);
-    } catch {
-      // handled
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : "Could not load constellations";
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -31,7 +35,8 @@ export function Constellations() {
 
   if (loading) {
     return (
-      <Card>
+      <Card className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(56,189,248,0.03)_0%,transparent_60%)] pointer-events-none" />
         <CardHeader>
           <CardTitle>
             <div className="flex items-center gap-2">
@@ -55,8 +60,34 @@ export function Constellations() {
     );
   }
 
+  if (error) {
+    return (
+      <Card className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(239,68,68,0.03)_0%,transparent_60%)] pointer-events-none" />
+        <CardHeader>
+          <CardTitle>
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-accent-400" />
+              Constellations
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <div className="flex flex-col items-center gap-3 py-6 text-center">
+          <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center">
+            <AlertCircle className="w-6 h-6 text-red-400" />
+          </div>
+          <p className="text-sm text-red-400">{error}</p>
+          <Button variant="secondary" size="sm" onClick={loadGroups}>
+            Try again
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+
   return (
-    <Card>
+    <Card className="relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(56,189,248,0.03)_0%,transparent_60%)] pointer-events-none" />
       <CardHeader>
         <CardTitle>
           <div className="flex items-center gap-2">
@@ -73,6 +104,7 @@ export function Constellations() {
           <a
             href="/groups"
             className="text-text-muted hover:text-text-primary transition-colors"
+            aria-label="View all constellations"
           >
             <ExternalLink className="w-5 h-5" />
           </a>
@@ -90,22 +122,42 @@ export function Constellations() {
       )}
 
       {groups.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 py-6 text-text-muted">
-          <Users className="w-8 h-8 opacity-30" />
-          <p className="text-sm">No constellations yet</p>
-          <p className="text-xs text-text-muted/60">
-            Create a group to compare schedules
-          </p>
-          <Button onClick={() => setShowCreate(true)}>
-            <Plus className="w-4 h-4" />
-            Create
-          </Button>
+        <div className="flex flex-col items-center gap-4 py-10 text-center relative">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-8 left-8 w-2 h-2 rounded-full bg-accent-400/10" />
+            <div className="absolute bottom-12 right-8 w-1.5 h-1.5 rounded-full bg-primary-400/8" />
+            <div className="absolute top-1/2 right-1/4 w-1 h-1 rounded-full bg-accent-400/6" />
+            <div className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 rounded-full bg-primary-400/6" />
+          </div>
+          <div className="w-16 h-16 rounded-full bg-accent-500/8 flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-accent-400/40" />
+          </div>
+          <div>
+            <p className="text-base font-semibold text-text-primary">
+              No constellations yet
+            </p>
+            <p className="text-sm text-text-muted mt-1 max-w-xs">
+              Create a group with your friends to see your constellations
+            </p>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <Button onClick={() => setShowCreate(true)}>
+              <Plus className="w-4 h-4" />
+              Create Constellation
+            </Button>
+            <a
+              href="/friends"
+              className="text-xs text-accent-400 hover:text-accent-300 transition-colors"
+            >
+              or add a Star first
+            </a>
+          </div>
         </div>
       ) : (
         <div className="space-y-2">
           {groups.slice(0, 3).map((g) => (
             <a key={g.id} href={`/groups/${g.id}`}>
-              <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group">
+              <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-white/[0.06] transition-colors cursor-pointer group">
                 <div className="w-10 h-10 rounded-xl bg-accent-500/20 flex items-center justify-center text-accent-400 shrink-0">
                   <Users className="w-5 h-5" />
                 </div>
@@ -123,7 +175,7 @@ export function Constellations() {
           {groups.length > 3 && (
             <a
               href="/groups"
-              className="block text-center text-xs text-accent-400 hover:text-accent-300 py-2"
+              className="block text-center text-xs text-accent-400 hover:text-accent-300 py-2 transition-colors"
             >
               View all {groups.length} constellations
             </a>
