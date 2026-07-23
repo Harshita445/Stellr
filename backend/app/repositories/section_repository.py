@@ -9,6 +9,10 @@ from app.repositories.base import BaseRepository
 class SectionRepository(BaseRepository[Section]):
     model_class = Section
 
+    async def find_by_name(self, name: str) -> Section | None:
+        stmt = select(Section).where(Section.name == name)
+        return await self.session.scalar(stmt)
+
     async def find_by_name_and_department(
         self, name: str, department: str, semester: int, academic_year: str
     ) -> Section | None:

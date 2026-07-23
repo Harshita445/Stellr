@@ -20,6 +20,7 @@ from app.core.config import settings
 from app.core.database import verify_database_connection
 from app.core.error_handlers import register_error_handlers
 from app.core.logging import configure_logging, logger
+from app.core.middleware import ProcessTimeMiddleware, RequestIDMiddleware, SecurityHeadersMiddleware
 
 # ── Application Startup Timestamp ────────────────────────────────────────
 
@@ -42,6 +43,7 @@ def create_app() -> FastAPI:
     # ── Middleware ────────────────────────────────────────────────────────
     # Order matters: first registered = outermost
 
+    app.add_middleware(RequestIDMiddleware)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=(
@@ -51,8 +53,10 @@ def create_app() -> FastAPI:
         ),
         allow_credentials=True,
         allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-        allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
+        allow_headers=["Authorization", "Content-Type", "X-Request-ID", "X-Device-ID"],
     )
+    app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(ProcessTimeMiddleware)
 
     # ── Routers ──────────────────────────────────────────────────────────
 

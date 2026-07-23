@@ -8,6 +8,8 @@ from app.models.section import Section
 from app.models.course import Course
 from app.models.timeslot import Timeslot, DAYS_OF_WEEK, SLOT_BOUNDARIES, SLOTS_PER_DAY
 from app.models.timetable_entry import TimetableEntry
+from app.models.user import User
+from app.models.device import Device
 
 __all__ = [
     "Base",
@@ -15,6 +17,8 @@ __all__ = [
     "Course",
     "Timeslot",
     "TimetableEntry",
+    "User",
+    "Device",
     "DAYS_OF_WEEK",
     "SLOT_BOUNDARIES",
     "SLOTS_PER_DAY",

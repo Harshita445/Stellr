@@ -17,6 +17,7 @@ class Section(Base):
     timetable_entries: Mapped[list["TimetableEntry"]] = relationship(  # noqa: F821
         back_populates="section", cascade="all, delete-orphan"
     )
+    users: Mapped[list["User"]] = relationship(back_populates="section")  # noqa: F821
 
     __table_args__ = (
         UniqueConstraint(

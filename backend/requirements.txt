@@ -13,9 +13,9 @@ alembic>=1.14.0,<2.0.0
 pydantic>=2.10.0,<3.0.0
 pydantic-settings>=2.6.0,<3.0.0
 
-# Auth (Phase 4)
-# pyjwt[crypto]>=2.9.0,<3.0.0
-# bcrypt>=4.2.0,<5.0.0
+# Auth
+pyjwt[crypto]>=2.9.0,<3.0.0
+bcrypt>=4.2.0,<5.0.0
 
 # Excel parsing
 openpyxl>=3.1.5,<4.0.0

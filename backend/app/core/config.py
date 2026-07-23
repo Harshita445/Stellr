@@ -16,7 +16,7 @@ class RedisConfig(BaseModel):
 
 
 class AuthConfig(BaseModel):
-    JWT_SECRET: str = "dev-secret-change-in-production"
+    JWT_SECRET: str = "dev-secret-change-in-production-32bytes!"
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRY_MINUTES: int = 15
     REFRESH_EXPIRY_DAYS: int = 30
