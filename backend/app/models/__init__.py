@@ -10,6 +10,7 @@ from app.models.timeslot import Timeslot, DAYS_OF_WEEK, SLOT_BOUNDARIES, SLOTS_P
 from app.models.timetable_entry import TimetableEntry
 from app.models.user import User
 from app.models.device import Device
+from app.models.friend import Friend
 
 __all__ = [
     "Base",
@@ -19,6 +20,7 @@ __all__ = [
     "TimetableEntry",
     "User",
     "Device",
+    "Friend",
     "DAYS_OF_WEEK",
     "SLOT_BOUNDARIES",
     "SLOTS_PER_DAY",

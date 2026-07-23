@@ -1,6 +1,7 @@
 import uuid
 
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from app.models.user import User
 from app.repositories.base import BaseRepository
@@ -28,3 +29,17 @@ class UserRepository(BaseRepository[User]):
             display_name=display_name,
             section_id=section_id,
         )
+
+    async def search_by_name(
+        self, query: str, exclude_user_id: uuid.UUID | None = None, limit: int = 20
+    ) -> list[User]:
+        stmt = (
+            select(User)
+            .options(selectinload(User.section))
+            .where(User.display_name.ilike(f"%{query}%"))
+            .limit(limit)
+        )
+        if exclude_user_id is not None:
+            stmt = stmt.where(User.id != exclude_user_id)
+        result = await self.session.execute(stmt)
+        return list(result.scalars().all())

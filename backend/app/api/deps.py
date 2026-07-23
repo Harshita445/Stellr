@@ -16,12 +16,14 @@ from app.core.middleware import get_rate_limiter, InMemoryRateLimiter
 from app.core.security import decode_access_token
 from app.repositories.course_repository import CourseRepository
 from app.repositories.device_repository import DeviceRepository
+from app.repositories.friend_repository import FriendRepository
 from app.repositories.section_repository import SectionRepository
 from app.repositories.timetable_entry_repository import TimetableEntryRepository
 from app.repositories.timeslot_repository import TimeslotRepository
 from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
 from app.services.dashboard_service import DashboardService
+from app.services.friend_service import FriendService
 from app.services.timetable_import_service import TimetableImportService
 from app.services.timetable_parser_service import TimetableParserService
 from app.services.timetable_query_service import TimetableQueryService
@@ -69,6 +71,10 @@ def get_tt_entry_repo(db: AsyncSession = Depends(get_db)) -> TimetableEntryRepos
     return TimetableEntryRepository(db)
 
 
+def get_friend_repo(db: AsyncSession = Depends(get_db)) -> FriendRepository:
+    return FriendRepository(db)
+
+
 # ── Service Dependencies ─────────────────────────────────────────────
 
 def get_auth_service(
@@ -112,6 +118,16 @@ def get_timetable_query_service(
     return TimetableQueryService(
         tt_entry_repo=tt_entry_repo,
         timeslot_repo=timeslot_repo,
+    )
+
+
+def get_friend_service(
+    friend_repo: FriendRepository = Depends(get_friend_repo),
+    user_repo: UserRepository = Depends(get_user_repo),
+) -> FriendService:
+    return FriendService(
+        friend_repo=friend_repo,
+        user_repo=user_repo,
     )
 
 

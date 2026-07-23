@@ -20,6 +20,16 @@ class User(Base):
     devices: Mapped[list["Device"]] = relationship(  # noqa: F821
         back_populates="user", cascade="all, delete-orphan"
     )
+    friends_initiated: Mapped[list["Friend"]] = relationship(  # noqa: F821
+        foreign_keys="Friend.user_id",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    friends_received: Mapped[list["Friend"]] = relationship(  # noqa: F821
+        foreign_keys="Friend.friend_id",
+        back_populates="friend",
+        cascade="all, delete-orphan",
+    )
 
     __table_args__ = (
         Index("idx_users_section", "section_id"),
