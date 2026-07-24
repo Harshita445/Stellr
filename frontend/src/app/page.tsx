@@ -12,7 +12,7 @@ export default function Home() {
     if (at && did) {
       router.replace("/dashboard");
     } else {
-      router.replace("/register");
+      router.replace("/onboarding");
     }
   }, [router]);
 

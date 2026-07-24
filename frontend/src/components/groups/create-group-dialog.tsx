@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { X, Loader2 } from "lucide-react";
-import { api } from "@/lib/api-client";
+import { X, Loader2, Star } from "lucide-react";
+import { api, FriendRelation } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
+import { FriendPicker } from "@/components/onboarding/friend-picker";
 
 interface CreateGroupDialogProps {
   onClose: () => void;
@@ -12,9 +13,14 @@ interface CreateGroupDialogProps {
 
 export function CreateGroupDialog({ onClose, onCreated }: CreateGroupDialogProps) {
   const [name, setName] = useState("");
-  const [memberIds, setMemberIds] = useState("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string>("");
+
+  const handlePeopleChange = (people: { id: string }[]) => {
+    setSelectedIds(people.map((p) => p.id));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,11 +28,7 @@ export function CreateGroupDialog({ onClose, onCreated }: CreateGroupDialogProps
     setSaving(true);
     setError(null);
     try {
-      const ids = memberIds
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
-      await api.groups.create(name.trim(), ids);
+      await api.groups.create(name.trim(), selectedIds);
       onCreated();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to create group";
@@ -62,19 +64,17 @@ export function CreateGroupDialog({ onClose, onCreated }: CreateGroupDialogProps
               placeholder="e.g. Study Group"
               autoFocus
               maxLength={100}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary-400 placeholder:text-text-muted/40"
+              className="w-full bg-space-700/50 border border-space-400/30 rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-500/50 transition-all duration-200"
             />
           </div>
 
           <div>
             <label className="text-xs text-text-muted block mb-1">
-              Member UUIDs <span className="opacity-50">(comma-separated, optional)</span>
+              Add members
             </label>
-            <input
-              value={memberIds}
-              onChange={(e) => setMemberIds(e.target.value)}
-              placeholder="uuid1, uuid2, ..."
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary-400 placeholder:text-text-muted/40"
+            <FriendPicker
+              currentUserId={currentUserId}
+              onPeopleChange={handlePeopleChange}
             />
           </div>
 

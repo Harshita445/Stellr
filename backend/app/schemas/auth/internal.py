@@ -12,8 +12,10 @@ class RegistrationResult(BaseModel):
     user_id: UUID
     display_name: str
     section_code: str
-    device_id: UUID
-    tokens: TokenPair
+    stellr_code: str | None
+    device_id: UUID | None
+    tokens: TokenPair | None
+    is_new_account: bool
 
 
 class RefreshResult(BaseModel):

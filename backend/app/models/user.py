@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import ForeignKey, Index, String, UniqueConstraint
+from sqlalchemy import ForeignKey, Index, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
@@ -13,6 +13,7 @@ class User(Base):
     display_name: Mapped[str] = mapped_column(String(100), nullable=False)
     section_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("sections.id"), nullable=False)
     avatar_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    stellr_code: Mapped[str | None] = mapped_column(String(10), nullable=True, unique=True)
 
     section: Mapped["Section"] = relationship(  # noqa: F821
         back_populates="users", lazy="joined"

@@ -17,8 +17,10 @@ from app.api.deps import (
     get_current_user,
     get_friend_service,
     get_rate_limit,
+    get_user_repo,
 )
 from app.core.middleware import InMemoryRateLimiter
+from app.repositories.user_repository import UserRepository
 from app.schemas.friends.responses import (
     FriendListResponse,
     FriendResponse,
@@ -85,6 +87,24 @@ async def add_friend(
             "section_code": result["section_code"],
         },
     }
+
+
+@router.get("/search-by-code", response_model=list[FriendSearchResponse])
+async def search_by_code(
+    code: str = Query(..., min_length=4, description="Stellr code to search"),
+    current_user: dict = Depends(get_current_user),
+    user_repo: UserRepository = Depends(get_user_repo),
+):
+    user = await user_repo.find_by_stellr_code(code)
+    if not user or user.id == current_user["user_id"]:
+        return []
+    return [
+        FriendSearchResponse(
+            id=user.id,
+            display_name=user.display_name,
+            section_code=user.section.name if user.section else None,
+        )
+    ]
 
 
 @router.delete("/{user_id}", status_code=204)

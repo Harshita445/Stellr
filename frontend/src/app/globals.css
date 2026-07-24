@@ -9,113 +9,162 @@
 
   body {
     @apply bg-space-900 text-text-primary font-sans antialiased;
-    background:
-      radial-gradient(1.5px 1.5px at 15% 8%, rgba(255,255,255,0.06) 0%, transparent 0%),
-      radial-gradient(1px 1px at 30% 20%, rgba(255,255,255,0.04) 0%, transparent 0%),
-      radial-gradient(1px 1px at 50% 5%, rgba(255,255,255,0.05) 0%, transparent 0%),
-      radial-gradient(1.5px 1.5px at 70% 15%, rgba(255,255,255,0.03) 0%, transparent 0%),
-      radial-gradient(1px 1px at 85% 25%, rgba(255,255,255,0.05) 0%, transparent 0%),
-      radial-gradient(1px 1px at 10% 35%, rgba(255,255,255,0.03) 0%, transparent 0%),
-      radial-gradient(1.5px 1.5px at 40% 40%, rgba(255,255,255,0.04) 0%, transparent 0%),
-      radial-gradient(1px 1px at 60% 45%, rgba(255,255,255,0.03) 0%, transparent 0%),
-      radial-gradient(1px 1px at 25% 55%, rgba(255,255,255,0.05) 0%, transparent 0%),
-      radial-gradient(1.5px 1.5px at 55% 60%, rgba(255,255,255,0.03) 0%, transparent 0%),
-      radial-gradient(1px 1px at 80% 50%, rgba(255,255,255,0.04) 0%, transparent 0%),
-      radial-gradient(1px 1px at 90% 65%, rgba(255,255,255,0.05) 0%, transparent 0%),
-      radial-gradient(1.5px 1.5px at 20% 70%, rgba(255,255,255,0.03) 0%, transparent 0%),
-      radial-gradient(1px 1px at 45% 75%, rgba(255,255,255,0.04) 0%, transparent 0%),
-      radial-gradient(1px 1px at 65% 80%, rgba(255,255,255,0.03) 0%, transparent 0%),
-      radial-gradient(1px 1px at 35% 90%, rgba(255,255,255,0.05) 0%, transparent 0%),
-      radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.04) 0%, transparent 0%),
-      radial-gradient(1px 1px at 50% 95%, rgba(255,255,255,0.03) 0%, transparent 0%),
-      radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 20%, rgba(56, 189, 248, 0.04) 0%, transparent 50%),
-      #0B1020;
     background-attachment: fixed;
     position: relative;
   }
 
-  body::before,
-  body::after {
-    content: "";
+  #nebula {
     position: fixed;
+    inset: 0;
     pointer-events: none;
     z-index: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 78% 18%, rgba(139, 92, 246, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 900px 600px at 15% 80%, rgba(56, 189, 248, 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 600px 500px at 50% 50%, rgba(168, 139, 250, 0.08) 0%, transparent 50%);
+    filter: blur(0px);
   }
 
+  /* Starfield layer — dense scatter across the full viewport */
   body::before {
-    top: -10%;
-    left: -10%;
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
     width: 2px;
     height: 2px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.7);
     box-shadow:
-      80px 60px 0 0 rgba(255, 255, 255, 0.25),
-      200px 180px 0 0 rgba(255, 255, 255, 0.15),
-      350px 120px 0 0 rgba(255, 255, 255, 0.3),
-      500px 280px 0 0 rgba(255, 255, 255, 0.2),
-      650px 100px 0 0 rgba(255, 255, 255, 0.25),
-      800px 200px 0 0 rgba(255, 255, 255, 0.15),
-      150px 350px 0 0 rgba(255, 255, 255, 0.2),
-      400px 420px 0 0 rgba(255, 255, 255, 0.15),
-      600px 380px 0 0 rgba(255, 255, 255, 0.25),
-      750px 450px 0 0 rgba(255, 255, 255, 0.1),
-      100px 500px 0 0 rgba(255, 255, 255, 0.2),
-      300px 550px 0 0 rgba(255, 255, 255, 0.15),
-      550px 520px 0 0 rgba(255, 255, 255, 0.2),
-      850px 500px 0 0 rgba(255, 255, 255, 0.15),
-      200px 650px 0 0 rgba(255, 255, 255, 0.2),
-      450px 700px 0 0 rgba(255, 255, 255, 0.1),
-      700px 600px 0 0 rgba(255, 255, 255, 0.15),
-      900px 650px 0 0 rgba(255, 255, 255, 0.2);
-    animation: shootingStar 8s linear infinite;
+      /* Row 1 — top edge */
+      32px 18px 0 0 rgba(255, 255, 255, 0.35),
+      95px 8px 0 0 rgba(255, 255, 255, 0.2),
+      180px 22px 0 0 rgba(255, 255, 255, 0.5),
+      260px 12px 0 0 rgba(255, 255, 255, 0.15),
+      340px 28px 0 0 rgba(255, 255, 255, 0.3),
+      430px 15px 0 0 rgba(255, 255, 255, 0.25),
+      520px 5px 0 0 rgba(255, 255, 255, 0.4),
+      610px 20px 0 0 rgba(255, 255, 255, 0.2),
+      700px 10px 0 0 rgba(255, 255, 255, 0.35),
+      790px 25px 0 0 rgba(255, 255, 255, 0.15),
+      880px 8px 0 0 rgba(255, 255, 255, 0.5),
+      960px 18px 0 0 rgba(255, 255, 255, 0.2),
+      /* Row 2 */
+      48px 70px 0 0 rgba(255, 255, 255, 0.25),
+      130px 85px 0 0 rgba(255, 255, 255, 0.4),
+      220px 60px 0 0 rgba(255, 255, 255, 0.15),
+      310px 90px 0 0 rgba(255, 255, 255, 0.3),
+      400px 72px 0 0 rgba(255, 255, 255, 0.2),
+      490px 80px 0 0 rgba(255, 255, 255, 0.45),
+      580px 68px 0 0 rgba(255, 255, 255, 0.15),
+      670px 92px 0 0 rgba(255, 255, 255, 0.3),
+      760px 75px 0 0 rgba(255, 255, 255, 0.25),
+      850px 88px 0 0 rgba(255, 255, 255, 0.2),
+      940px 65px 0 0 rgba(255, 255, 255, 0.35),
+      /* Row 3 */
+      20px 150px 0 0 rgba(255, 255, 255, 0.2),
+      110px 140px 0 0 rgba(255, 255, 255, 0.5),
+      200px 160px 0 0 rgba(255, 255, 255, 0.15),
+      285px 135px 0 0 rgba(255, 255, 255, 0.35),
+      370px 155px 0 0 rgba(255, 255, 255, 0.25),
+      460px 145px 0 0 rgba(255, 255, 255, 0.4),
+      550px 165px 0 0 rgba(255, 255, 255, 0.15),
+      640px 130px 0 0 rgba(255, 255, 255, 0.3),
+      730px 150px 0 0 rgba(255, 255, 255, 0.2),
+      820px 160px 0 0 rgba(255, 255, 255, 0.5),
+      910px 140px 0 0 rgba(255, 255, 255, 0.15),
+      /* Row 4 */
+      60px 220px 0 0 rgba(255, 255, 255, 0.35),
+      150px 240px 0 0 rgba(255, 255, 255, 0.2),
+      240px 210px 0 0 rgba(255, 255, 255, 0.45),
+      330px 235px 0 0 rgba(255, 255, 255, 0.15),
+      420px 225px 0 0 rgba(255, 255, 255, 0.3),
+      510px 215px 0 0 rgba(255, 255, 255, 0.25),
+      600px 230px 0 0 rgba(255, 255, 255, 0.4),
+      690px 240px 0 0 rgba(255, 255, 255, 0.15),
+      780px 220px 0 0 rgba(255, 255, 255, 0.35),
+      870px 235px 0 0 rgba(255, 255, 255, 0.2),
+      960px 210px 0 0 rgba(255, 255, 255, 0.3),
+      /* Row 5 */
+      35px 310px 0 0 rgba(255, 255, 255, 0.25),
+      120px 295px 0 0 rgba(255, 255, 255, 0.4),
+      210px 320px 0 0 rgba(255, 255, 255, 0.15),
+      295px 305px 0 0 rgba(255, 255, 255, 0.3),
+      385px 315px 0 0 rgba(255, 255, 255, 0.2),
+      475px 300px 0 0 rgba(255, 255, 255, 0.5),
+      565px 325px 0 0 rgba(255, 255, 255, 0.15),
+      655px 310px 0 0 rgba(255, 255, 255, 0.35),
+      745px 295px 0 0 rgba(255, 255, 255, 0.25),
+      835px 320px 0 0 rgba(255, 255, 255, 0.3),
+      925px 305px 0 0 rgba(255, 255, 255, 0.2),
+      /* Row 6 */
+      75px 400px 0 0 rgba(255, 255, 255, 0.3),
+      165px 385px 0 0 rgba(255, 255, 255, 0.2),
+      255px 410px 0 0 rgba(255, 255, 255, 0.45),
+      345px 390px 0 0 rgba(255, 255, 255, 0.15),
+      435px 405px 0 0 rgba(255, 255, 255, 0.35),
+      525px 395px 0 0 rgba(255, 255, 255, 0.25),
+      615px 380px 0 0 rgba(255, 255, 255, 0.4),
+      705px 400px 0 0 rgba(255, 255, 255, 0.15),
+      795px 390px 0 0 rgba(255, 255, 255, 0.3),
+      885px 405px 0 0 rgba(255, 255, 255, 0.2),
+      /* Row 7 */
+      40px 490px 0 0 rgba(255, 255, 255, 0.2),
+      130px 475px 0 0 rgba(255, 255, 255, 0.5),
+      220px 500px 0 0 rgba(255, 255, 255, 0.15),
+      310px 480px 0 0 rgba(255, 255, 255, 0.35),
+      400px 495px 0 0 rgba(255, 255, 255, 0.25),
+      490px 470px 0 0 rgba(255, 255, 255, 0.3),
+      580px 500px 0 0 rgba(255, 255, 255, 0.2),
+      670px 485px 0 0 rgba(255, 255, 255, 0.4),
+      760px 490px 0 0 rgba(255, 255, 255, 0.15),
+      850px 475px 0 0 rgba(255, 255, 255, 0.3),
+      940px 500px 0 0 rgba(255, 255, 255, 0.25),
+      /* Row 8 — bottom area */
+      55px 580px 0 0 rgba(255, 255, 255, 0.35),
+      145px 565px 0 0 rgba(255, 255, 255, 0.2),
+      235px 590px 0 0 rgba(255, 255, 255, 0.45),
+      325px 570px 0 0 rgba(255, 255, 255, 0.15),
+      415px 585px 0 0 rgba(255, 255, 255, 0.3),
+      505px 575px 0 0 rgba(255, 255, 255, 0.25),
+      595px 595px 0 0 rgba(255, 255, 255, 0.4),
+      685px 560px 0 0 rgba(255, 255, 255, 0.2),
+      775px 585px 0 0 rgba(255, 255, 255, 0.35),
+      865px 570px 0 0 rgba(255, 255, 255, 0.15),
+      955px 590px 0 0 rgba(255, 255, 255, 0.3),
+      /* Extra bright stars (3px) scattered */
+      170px 105px 1px 0 rgba(255, 255, 255, 0.65),
+      450px 350px 1px 0 rgba(255, 255, 255, 0.6),
+      720px 270px 1px 0 rgba(255, 255, 255, 0.7),
+      340px 450px 1px 0 rgba(255, 255, 255, 0.55),
+      830px 160px 1px 0 rgba(255, 255, 255, 0.6),
+      100px 530px 1px 0 rgba(255, 255, 255, 0.65),
+      600px 180px 1px 0 rgba(255, 255, 255, 0.7),
+      510px 440px 1px 0 rgba(255, 255, 255, 0.55),
+      890px 350px 1px 0 rgba(255, 255, 255, 0.6),
+      270px 280px 1px 0 rgba(255, 255, 255, 0.7);
   }
 
+  /* Static shooting star — diagonal trail, upper right */
   body::after {
-    top: 20%;
-    right: -5%;
-    width: 1px;
+    content: "";
+    position: fixed;
+    top: 8%;
+    right: 12%;
+    width: 80px;
     height: 1px;
-    border-radius: 50%;
-    background: rgba(168, 139, 250, 0.5);
-    box-shadow:
-      -80px 100px 0 0 rgba(168, 139, 250, 0.25),
-      -180px 250px 0 0 rgba(168, 139, 250, 0.15),
-      -280px 150px 0 0 rgba(168, 139, 250, 0.3),
-      -380px 300px 0 0 rgba(168, 139, 250, 0.2),
-      -120px 400px 0 0 rgba(168, 139, 250, 0.15),
-      -250px 480px 0 0 rgba(168, 139, 250, 0.2),
-      -350px 550px 0 0 rgba(168, 139, 250, 0.1),
-      -80px 600px 0 0 rgba(168, 139, 250, 0.2),
-      -200px 680px 0 0 rgba(168, 139, 250, 0.15),
-      -320px 350px 0 0 rgba(168, 139, 250, 0.15);
-    animation: shootingStar 12s linear infinite;
-    animation-delay: 4s;
-  }
-
-  @keyframes shootingStar {
-    0% {
-      transform: translate(0, 0) scale(1);
-      opacity: 0;
-    }
-    5% {
-      opacity: 1;
-    }
-    15% {
-      transform: translate(-50px, 50px) scale(1.5);
-      opacity: 0.8;
-    }
-    100% {
-      transform: translate(-120px, 120px) scale(0);
-      opacity: 0;
-    }
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.0) 100%);
+    transform: rotate(-35deg);
+    border-radius: 1px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.7;
   }
 
   @media (prefers-reduced-motion: reduce) {
     body::before,
     body::after {
-      animation: none;
       display: none;
     }
   }

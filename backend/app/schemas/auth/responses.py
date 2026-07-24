@@ -15,6 +15,7 @@ class UserResponse(BaseModel):
     id: UUID = Field(..., description="User UUID — public identifier")
     display_name: str = Field(..., description="Display name")
     section_code: str = Field(..., description="Section code")
+    stellr_code: str | None = Field(None, description="Shareable Stellr code")
     avatar_url: str | None = Field(None, description="Avatar URL")
 
     @classmethod
@@ -23,11 +24,18 @@ class UserResponse(BaseModel):
             id=user.id,
             display_name=user.display_name,
             section_code=section_code,
+            stellr_code=user.stellr_code,
             avatar_url=user.avatar_url,
         )
 
 
 class RegisterResponse(BaseModel):
+    user: UserResponse = Field(..., description="User information")
+    tokens: TokenResponse | None = Field(None, description="Authentication tokens — present only for new accounts")
+    is_new_account: bool = Field(..., description="True if the account was just created")
+
+
+class ClaimResponse(BaseModel):
     user: UserResponse = Field(..., description="User information")
     tokens: TokenResponse = Field(..., description="Authentication tokens")
 

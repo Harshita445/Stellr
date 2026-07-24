@@ -18,7 +18,7 @@ from app.schemas.auth.requests import (  # noqa: F811
     RefreshRequest,
     RegisterRequest,
 )
-from app.schemas.auth.responses import RefreshResponse, RegisterResponse, TokenResponse, UserResponse
+from app.schemas.auth.responses import ClaimResponse, RefreshResponse, RegisterResponse, TokenResponse, UserResponse
 from app.services.auth_service import AuthService
 
 router = APIRouter()
@@ -28,12 +28,14 @@ router = APIRouter()
     "/register",
     response_model=RegisterResponse,
     status_code=201,
-    summary="Register or login with roll number",
+    summary="Register or check roll number",
     description=(
-        "One endpoint for both registration and login. "
-        "If the roll number is new, a user is created. "
-        "If the roll number exists, the previous device is deactivated "
-        "and a new device session is issued (one active device per user). "
+        "One endpoint for both registration and checking. "
+        "If the roll number is new, a user is created and tokens are issued. "
+        "If the roll number exists, the response indicates the account exists "
+        "and the frontend should prompt the user before claiming the account. "
+        "Tokens are only issued for new accounts here — call /claim to "
+        "transfer an existing account to a new device. "
         "Roll number is NEVER returned in the response."
     ),
 )
@@ -63,6 +65,55 @@ async def register(
             id=result.user_id,
             display_name=result.display_name,
             section_code=result.section_code,
+            stellr_code=result.stellr_code,
+        ),
+        tokens=TokenResponse(
+            access_token=result.tokens.access_token,
+            refresh_token=result.tokens.refresh_token,
+            device_id=str(result.device_id),
+        ) if result.tokens else None,
+        is_new_account=result.is_new_account,
+    )
+
+
+@router.post(
+    "/claim",
+    response_model=ClaimResponse,
+    status_code=201,
+    summary="Claim existing account on a new device",
+    description=(
+        "Called after the user confirms they want to transfer their existing "
+        "account to this device. Deactivates the previous device's session "
+        "and issues a new token pair bound to this device. "
+        "Roll number is NEVER returned in the response."
+    ),
+)
+async def claim(
+    body: RegisterRequest,
+    request: Request,
+    auth_service: AuthService = Depends(get_auth_service),
+    rate_limiter: InMemoryRateLimiter = Depends(get_rate_limit),
+) -> ClaimResponse:
+    client_ip = request.client.host if request.client else "unknown"
+    if not rate_limiter.check(f"claim:{client_ip}", max_requests=5, window_seconds=60):
+        from fastapi.responses import JSONResponse
+        return JSONResponse(
+            status_code=429,
+            content={"error": {"code": "RATE_LIMITED", "message": "Too many requests. Try again in 60 seconds."}},
+            headers={"Retry-After": "60"},
+        )
+
+    result = await auth_service.claim(
+        roll_number=body.roll_number,
+        section_code=body.section_code,
+    )
+
+    return ClaimResponse(
+        user=UserResponse(
+            id=result.user_id,
+            display_name=result.display_name,
+            section_code=result.section_code,
+            stellr_code=result.stellr_code,
         ),
         tokens=TokenResponse(
             access_token=result.tokens.access_token,

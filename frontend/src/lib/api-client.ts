@@ -22,6 +22,20 @@ export interface AddFriendResult {
   user: FriendUser;
 }
 
+export interface SectionItem {
+  name: string;
+  department: string;
+  semester: number;
+}
+
+export interface UserProfile {
+  id: string;
+  display_name: string;
+  section_code: string | null;
+  stellr_code: string | null;
+  avatar_url: string | null;
+}
+
 export class ApiError extends Error {
   status: number;
   code: string;
@@ -160,6 +174,8 @@ export const api = {
       request<AddFriendResult>("POST", `/friends/${userId}`),
     remove: (userId: string) =>
       request<void>("DELETE", `/friends/${userId}`),
+    searchByCode: (code: string) =>
+      request<FriendSearchResult[]>("GET", `/friends/search-by-code?code=${encodeURIComponent(code)}`),
   },
   availability: {
     compareFriend: (friendId: string) =>
@@ -181,5 +197,34 @@ export const api = {
       request<GroupMember>("POST", `/groups/${groupId}/members`, { user_id: userId }),
     removeMember: (groupId: string, userId: string) =>
       request<void>("DELETE", `/groups/${groupId}/members/${userId}`),
+  },
+  auth: {
+    register: (rollNumber: string, displayName: string, sectionCode: string) =>
+      request<{
+        user: FriendUser & { stellr_code?: string };
+        tokens?: { access_token: string; refresh_token: string; device_id: string };
+        is_new_account: boolean;
+      }>("POST", "/auth/register", {
+        roll_number: rollNumber,
+        display_name: displayName,
+        section_code: sectionCode,
+      }),
+    claim: (rollNumber: string, displayName: string, sectionCode: string) =>
+      request<{
+        user: FriendUser & { stellr_code?: string };
+        tokens: { access_token: string; refresh_token: string; device_id: string };
+      }>("POST", "/auth/claim", {
+        roll_number: rollNumber,
+        display_name: displayName,
+        section_code: sectionCode,
+      }),
+  },
+  sections: {
+    list: () =>
+      request<{ sections: SectionItem[] }>("GET", "/sections"),
+  },
+  users: {
+    me: () =>
+      request<UserProfile>("GET", "/users/me"),
   },
 };
