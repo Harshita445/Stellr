@@ -138,7 +138,7 @@ export default function DashboardPage() {
           />
           <StatChip
             icon={Star}
-            label="Stars"
+            label="Your People"
             value={stats ? `${stats.friendCount}` : "—"}
             loading={loading}
           />

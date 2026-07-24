@@ -149,10 +149,12 @@ export function VisibleStars() {
       <Card className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(139,92,246,0.03)_0%,transparent_60%)] pointer-events-none" />
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-8 right-8 w-2 h-2 rounded-full bg-primary-400/10" />
-          <div className="absolute bottom-12 left-6 w-1.5 h-1.5 rounded-full bg-accent-400/8" />
-          <div className="absolute top-1/3 left-1/4 w-1 h-1 rounded-full bg-primary-400/6" />
-          <div className="absolute bottom-1/3 right-1/4 w-1.5 h-1.5 rounded-full bg-accent-400/6" />
+          <div className="absolute top-8 right-8 w-2 h-2 rounded-full bg-primary-400/15" />
+          <div className="absolute bottom-12 left-6 w-1.5 h-1.5 rounded-full bg-accent-400/12" />
+          <div className="absolute top-1/3 left-1/4 w-1 h-1 rounded-full bg-primary-400/8" />
+          <div className="absolute bottom-1/3 right-1/4 w-1.5 h-1.5 rounded-full bg-accent-400/8" />
+          <div className="absolute top-12 left-12 w-1 h-1 rounded-full bg-primary-300/6" />
+          <div className="absolute bottom-8 right-1/3 w-1 h-1 rounded-full bg-accent-300/6" />
         </div>
         <CardHeader>
           <CardTitle>

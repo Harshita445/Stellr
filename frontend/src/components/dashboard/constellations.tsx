@@ -133,10 +133,12 @@ export function Constellations() {
       {groups.length === 0 ? (
         <div className="flex flex-col items-center gap-4 py-10 text-center relative">
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-8 left-8 w-2 h-2 rounded-full bg-accent-400/10" />
-            <div className="absolute bottom-12 right-8 w-1.5 h-1.5 rounded-full bg-primary-400/8" />
-            <div className="absolute top-1/2 right-1/4 w-1 h-1 rounded-full bg-accent-400/6" />
-            <div className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 rounded-full bg-primary-400/6" />
+            <div className="absolute top-8 left-8 w-2 h-2 rounded-full bg-accent-400/15" />
+            <div className="absolute bottom-12 right-8 w-1.5 h-1.5 rounded-full bg-primary-400/12" />
+            <div className="absolute top-1/2 right-1/4 w-1 h-1 rounded-full bg-accent-400/8" />
+            <div className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 rounded-full bg-primary-400/8" />
+            <div className="absolute top-12 right-12 w-1 h-1 rounded-full bg-accent-300/6" />
+            <div className="absolute bottom-8 left-1/4 w-1 h-1 rounded-full bg-primary-300/6" />
           </div>
           <div className="w-16 h-16 rounded-full bg-accent-500/8 flex items-center justify-center">
             <Sparkles className="w-8 h-8 text-accent-400/40" />
@@ -150,7 +152,10 @@ export function Constellations() {
             </p>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <Button onClick={() => setShowCreate(true)}>
+            <Button
+              onClick={() => setShowCreate(true)}
+              className="shadow-glow-sm hover:shadow-glow-md transition-shadow duration-200"
+            >
               <Plus className="w-4 h-4" />
               Create Group
             </Button>
